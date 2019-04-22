@@ -9,3 +9,6 @@ npm install
 ```
 node index.js
 ```
+```
+open browser http://localhost:3000/
+```
