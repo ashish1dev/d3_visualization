@@ -1,0 +1,197 @@
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>Data Intensive Computing : Word Cloud (Lab 2)</title>
+    <script src="../lib/d3/d3.js" charset="utf-8"></script>
+    <script src="../lib/d3/d3.layout.cloud.js"></script>
+    <script src="../d3.wordcloud.js"></script>
+    <!-- <script src="example.words.js"></script> -->
+
+    <script src="wc_nyt_aids_data.js"></script>
+    <script src="wc_nyt_all_disease.js"></script>
+    <script src="wc_nyt_alzheimers_data.js"></script>
+    <script src="wc_nyt_cancer_data.js"></script>
+    <script src="wc_nyt_diabetes_data.js"></script>
+    <script src="wc_nyt_flu_data.js"></script>
+
+
+    <script src="wco_nyt_aids_data.js"></script>
+    <script src="wco_nyt_flu_data.js"></script>
+    <script src="wco_nyt_diabetes_data.js"></script>
+    <script src="wco_nyt_cancer_data.js"></script>
+    <script src="wco_nyt_alzheimers_data.js"></script>
+    <script src="wco_nyt_all_disease_data.js"></script>
+
+
+    <script src="wc_twitter_alzheimers_data.js"></script>
+    <script src="wc_twitter_cancer_data.js"></script>
+    <script src="wc_twitter_diabetes_data.js"></script>
+    <script src="wc_twitter_aids_data.js"></script>
+    <script src="wc_twitter_flu_data.js"></script>
+    <script src="wc_twitter_all_disease_data.js"></script>
+
+
+    <script src="wco_twitter_aids_data.js"></script>
+    <script src="wco_twitter_alzheimers_data.js"></script>
+    <script src="wco_twitter_cancer_data.js"></script>
+    <script src="wco_twitter_diabetes_data.js"></script>
+    <script src="wco_twitter_flu_data.js"></script>
+    <script src="wco_twitter_all_disease_data.js"></script>
+
+
+    <script src="wc_cc_alzheimers_data.js"></script>
+    <script src="wc_cc_cancer_data.js"></script>
+    <script src="wc_cc_diabetes_data.js"></script>
+    <script src="wc_cc_aids_data.js"></script>
+    <script src="wc_cc_flu_data.js"></script>
+
+    <script src="wco_cc_alzheimers_data.js"></script>
+    <script src="wco_cc_aids_data.js"></script>
+    <script src="wco_cc_flu_data.js"></script>
+    <script src="wco_cc_diabetes_data.js"></script>
+    <script src="wco_cc_cancer_data.js"></script>
+    <!-- <script src="wc_cc_all_disease_data.js"></script> -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+
+  <body style="text-align: center">
+
+  <h1>DIC : Lab 2 </h1>
+  <h2 id = 'heading' name = 'heading'></h2>
+    <div class="form-group row"   >
+      <div class="col-xs-2">
+
+          <label for="wc_co">Operation Type</label>
+          <select class="form-control" id="wc_co">
+            <option value='wc'>word count</option>
+            <option value='wco'>co-occurence</option>
+          </select>
+
+          <label for="source">Source</label>
+          <select class="form-control" id="source">
+            <option value ='twitter'>Twitter</option>
+            <option value ='nyt'>New York Times</option>
+            <option value = 'cc'>Common Crawl</option>
+          </select>
+
+
+          <label for="subtopic">Sub Topic</label>
+          <select class="form-control" id="subtopic">
+            <option value ='all_disease'>All Disease</option>
+            <option value ='flu'>Flu</option>
+            <option value = 'cancer'>Cancer</option>
+            <option value = 'diabetes'>Diabetes</option>
+            <option value = 'aids'>Aids</option>
+            <option value = 'alzheimers'>Alzeimers</option>
+          </select>
+
+
+        <label for="topcount">Top N</label>
+        <select class="form-control" id="topcount">
+          <option>10</option>
+          <option>50</option>
+        </select>
+
+      </div>
+    </div>
+
+    <div id='wordcloud' style='position:relative;left:200px;top:-250px' ></div>
+
+    <!-- <p>This is a word cloud of the first two chapters of Oliver Twist. Some words are clickable.</p>
+    <p><a href="https://github.com/wvengen/d3-wordcloud">https://github.com/wvengen/d3-wordcloud</a></p> -->
+
+    <script>
+
+      // var words  =  [
+      //   {text: 'have', size: 102},
+      //   {text: 'Oliver', size: 47}
+      // ];
+      // var selected = wco_nyt_flu_words;
+      //wco_nyt_aids_words;
+
+      //wco_nyt_all_disease_words;
+
+      //wc_nyt_flu_words;
+      //wc_nyt_cancer_words
+      //wc_nyt_diabetes_words;
+      //wc_nyt_aids_words;
+      //wc_nyt_alzheimers_words;
+      //wc_nyt_all_disease_words;
+
+      // console.log(selected[0]);
+
+
+
+
+        function load_d3(wordData, topCount){
+
+          $('#wordcloud').empty();
+          var words = wordData.slice(1, (topCount+1));
+
+          console.log('drawing...');
+          d3.wordcloud()
+            .size([700, 500])
+            .fill(d3.scale.ordinal().range(["#884400", "#448800", "#888800", "#444400"]))
+            .words(words)
+            .onwordclick(function(d, i) {
+              if (d.href) { window.location = d.href; }
+            })
+            .start();
+
+        }
+        function generate_file_name(){
+
+
+            var wc_co = $('#wc_co').val()
+            var source = $('#source').val()
+            var subTopic = $('#subtopic').val()
+            var topCount = $('#topcount').val()
+            var varName= wc_co+'_'+source+'_'+subTopic+'_words';
+            $( "#heading" ).html( varName  + ":"+ topCount);
+            varName = eval(varName);
+            console.log(varName[0]);
+            load_d3(varName, parseInt(topCount));
+        }
+
+        generate_file_name();
+
+        $("#wc_co").change(function () {
+           var end = this.value;
+           // alert(end)
+           // var firstDropVal = $('#pick').val();
+            generate_file_name();
+       });
+
+       $("#source").change(function () {
+          var end = this.value;
+          // alert(end)
+          // var firstDropVal = $('#pick').val();
+           generate_file_name();
+        });
+
+      $("#subtopic").change(function () {
+         var end = this.value;
+         // alert(end)
+         // var firstDropVal = $('#pick').val();
+         generate_file_name();
+       });
+
+      $("#topcount").change(function () {
+        var end = this.value;
+        // alert(end)
+        // var firstDropVal = $('#pick').val();
+         generate_file_name();
+      });
+
+    </script>
+  </body>
+</html>
